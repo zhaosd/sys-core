@@ -1,0 +1,89 @@
+buildscript {
+	ext {
+		springBootVersion = '2.0.3.RELEASE'
+	}
+	repositories {
+		maven {url 'http://maven.aliyun.com/nexus/content/groups/public/'}
+		mavenLocal()
+		mavenCentral()
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+	}
+}
+
+allprojects {
+	repositories {
+		mavenLocal()
+		maven {url 'http://maven.aliyun.com/nexus/content/groups/public/'}
+		jcenter()
+		maven { url "http://nexus.fw121.com/repository/java/" }
+		maven { url "http://nexus.fw121.com/repository/java_snap/" }
+	}
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+group = 'com.fw121.core'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = 1.8
+
+repositories {
+	mavenLocal()
+	maven {url 'http://maven.aliyun.com/nexus/content/groups/public/'}
+	mavenCentral()
+}
+
+
+dependencies {
+	compile('org.springframework.boot:spring-boot-starter-web')
+	compile('tk.mybatis:mapper-spring-boot-starter:2.0.3')
+	compile('io.springfox:springfox-swagger2:2.9.2')
+	compile('com.auth0:java-jwt:3.4.0')
+	compile('io.jsonwebtoken:jjwt:0.9.0')
+	compile('org.bouncycastle:bcprov-ext-jdk15on:1.59')
+
+	compile group: 'org.apache.shiro', name: 'shiro-core', version: '1.4.0'
+	compile group: 'org.apache.shiro', name: 'shiro-spring', version: '1.4.0'
+	compile group: 'org.apache.shiro', name: 'shiro-ehcache', version: '1.4.0'
+
+	runtime('mysql:mysql-connector-java')
+	runtime('org.springframework.boot:spring-boot-devtools')
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+}
+
+// add fw maven private repository
+apply plugin: 'maven-publish'
+publishing {
+
+	jar {
+		enabled = true
+	}
+
+	publications {
+		bootJava(MavenPublication) {
+			groupId project.group
+			artifactId project.name
+			version project.version
+			//若是war包，就写components.web,若是jar包，就写components.java
+			from components.java
+		}
+	}
+	repositories {
+		maven {
+			if (project.version.endsWith('-SNAPSHOT')) {
+				url = "http://nexus.fw121.com/repository/java_snap/"
+			} else {
+				url = "http://nexus.fw121.com/repository/java/"
+			}
+
+			credentials {
+				username 'user'
+				password 'Futureweather912'
+			}
+		}
+	}
+}
