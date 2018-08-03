@@ -27,7 +27,7 @@ apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 
-group = 'com.fw121.core'
+group = 'top.zhaosd.core'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 1.8
 
@@ -55,7 +55,7 @@ dependencies {
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 
-// add fw maven private repository
+// add maven private repository
 apply plugin: 'maven-publish'
 publishing {
 
